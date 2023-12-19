@@ -1,8 +1,8 @@
 
 [![Swift Version](https://img.shields.io/badge/Swift-5.x-orange.svg)]()
-[![MacOS Support](https://img.shields.io/badge/MacOS-10.14+-green)]()
-[![iOS Support](https://img.shields.io/badge/iOS-11.0+-green)]()
-[![tvOS Support](https://img.shields.io/badge/tvOS-11.0+-green)]()
+[![MacOS Support](https://img.shields.io/badge/MacOS-13.0+-green)]()
+[![iOS Support](https://img.shields.io/badge/iOS-13.0+-green)]()
+[![tvOS Support](https://img.shields.io/badge/tvOS-13.0+-green)]()
 [![watchOS Support](https://img.shields.io/badge/watchOS-4.0+-green)]()
 [![visionOS Support](https://img.shields.io/badge/visionOS-1.0+-green)]()
 
