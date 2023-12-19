@@ -6,8 +6,8 @@
 [![watchOS Support](https://img.shields.io/badge/watchOS-4.0+-green)]()
 [![visionOS Support](https://img.shields.io/badge/visionOS-1.0+-green)]()
 
-## RateBoi
-
+## RateBoi 
+### This Library is Unfinished & Untested. 
 Getting a user to write a positive review is all about timing. Get this wrong and best case scenario is they don’t review your app and you’ve missed your opportunity. The worst case is they do review it and leave a horrible review based on the bad experience. 
 
 **RateBoi** is an open-source dependency [(GNU v3)](https://github.com/thebarbican19/RateBoi?tab=GPL-3.0-1-ov-file) for iOS & MacOS designed to make it easy to trigger reviews at the right time built for **[SprintDock](https://sprintdock.app?ref=rateboi) & [BatteryBoi](https://batteryboi.ovatar.io?ref=rateboi)**
