@@ -10,7 +10,7 @@
 
 Getting a user to write a positive review is all about timing. Get this wrong and best case scenario is they don’t review your app and you’ve missed your opportunity. The worst case is they do review it and leave a horrible review based on the bad experience. 
 
-**RateBoi** is an open-source dependency [(GNU v3)](https://github.com/thebarbican19/RateBoi?tab=GPL-3.0-1-ov-file) for iOS & MacOS designed to make it easy to trigger reviews at the right time built for [SprintDock](https://sprintdock.app?ref=rateboi & [BatteryBoi](https://batteryboi.ovatar.io?ref=rateboi)
+**RateBoi** is an open-source dependency [(GNU v3)](https://github.com/thebarbican19/RateBoi?tab=GPL-3.0-1-ov-file) for iOS & MacOS designed to make it easy to trigger reviews at the right time built for **[SprintDock](https://sprintdock.app?ref=rateboi) & [BatteryBoi](https://batteryboi.ovatar.io?ref=rateboi)**
 
 This is done by utilizing a ‘delight’ score. Once the delight score reaches a certain threshold in an amount of time, a callback is triggered and you can trigger a SkoreKit review prompt, or deliver your own custom UI and functionality. 
 
