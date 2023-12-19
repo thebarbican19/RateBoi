@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "enalogswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/thebarbican19/EnalogSwift",
+      "state" : {
+        "revision" : "409edc5206a5a8681de0720f76c91fe4f1de9c42",
+        "version" : "2.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
