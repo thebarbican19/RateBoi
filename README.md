@@ -1,43 +1,87 @@
 
-[![Swift Version](https://img.shields.io/badge/Swift-5.x-orange.svg)]()
-[![MacOS Support](https://img.shields.io/badge/MacOS-13.0+-green)]()
-[![iOS Support](https://img.shields.io/badge/iOS-13.0+-green)]()
-[![tvOS Support](https://img.shields.io/badge/tvOS-13.0+-green)]()
-[![watchOS Support](https://img.shields.io/badge/watchOS-4.0+-green)]()
+[![Swift Version](https://img.shields.io/badge/Swift-5.9-orange.svg)]()
+[![macOS Support](https://img.shields.io/badge/macOS-13.0+-green)]()
+[![iOS Support](https://img.shields.io/badge/iOS-16.0+-green)]()
+[![tvOS Support](https://img.shields.io/badge/tvOS-16.0+-green)]()
+[![watchOS Support](https://img.shields.io/badge/watchOS-9.0+-green)]()
 [![visionOS Support](https://img.shields.io/badge/visionOS-1.0+-green)]()
 
-## RateBoi 
-### This Library is Unfinished & Untested. 
-Getting a user to write a positive review is all about timing. Get this wrong and best case scenario is they don’t review your app and you’ve missed your opportunity. The worst case is they do review it and leave a horrible review based on the bad experience. 
+## RateBoi
 
-**RateBoi** is an open-source dependency [(GNU v3)](https://github.com/thebarbican19/RateBoi?tab=GPL-3.0-1-ov-file) for iOS & MacOS designed to make it easy to trigger reviews at the right time built for **[SprintDock](https://sprintdock.app?ref=rateboi) & [BatteryBoi](https://batteryboi.ovatar.io?ref=rateboi)**
+Getting a user to do something at the wrong moment — write a review, grant a permission, try a feature — is how you lose them. **RateBoi** is an open-source dependency [(GNU v3)](https://github.com/thebarbican19/RateBoi?tab=GPL-3.0-1-ov-file) for Apple platforms that fires a callback **when the timing is right** — **Orrivo - Life Intelligence made by Joe Barbour**.
 
-This is done by utilizing a **‘delight’ score**. Once the delight score reaches a certain threshold in an amount of time, a callback/state is triggered and you can trigger a SkoreKit review prompt, or deliver your own custom UI and functionality. 
+You register **named triggers**. Each trigger fires once (or re-arms on a cooldown) when its conditions are met — a number of **distinct active days**, a number of **days since first use**, and/or a **score threshold** you feed with positive actions. When a trigger fires you get a callback, a Combine event, and a `@Published` set you can bind to. Use it for an App Store review prompt, an onboarding nudge, a "try this feature" hint — anything timed.
 
 ### Install
-You can add this package to your project using Swift Package Manager. Enter the following url when adding it to your project package dependencies:
+
+Swift Package Manager:
 
 `https://github.com/thebarbican19/RateBoi`
 
-### Setup
-From your AppDelegate or another initiation point, you can call the following setup function. Here, you can set the required threshold (points) and enable/disable debugging. 
+### Configure
 
-`RateBoi.main.setup(points: 30, debug: true)`
+Call once at launch. Pass an App Group suite to share state across your app and its extensions:
 
-This function is **not required**, and by excluding it the required threshold will default to 20 points and debugging is triggered by the `#DEBUG` flag.
+```swift
+RateBoi.main.configure(suite: "group.com.yourapp", debug: true)
+```
 
-### Scoring
-RateBoi triggers the rate callback when a score is reached. Updating the score should be done when the user completes a positive action, like completing the onboarding, creating a new item, etc. You can set the amount of static number of points manually. The default is determined by the time between events, app opens, and usage (in-app) and errors. If positive events are triggered in quick succession then a callback will be triggered much faster. Similarly, if fatal errors have been triggered and only one previous positive event then the callback/state will not be called. 
+Suite is optional (defaults to `.standard`). Debug prints trigger activity.
 
-`RateBoi.main.setup(points: 30, debug: true)`
+### Register triggers
 
+```swift
+RateBoi.main.register([
+    // Nudge to enable a feature after 3 distinct days of use, re-ask every 4 days.
+    RateTrigger(id: "recording_nudge", days: 3, cooldown: 4 * 86_400),
 
+    // Ask for a review once a "delight" score of 30 is reached.
+    RateTrigger(id: "rating", score: 30, scoring: .delight),
 
-### Callback
-TBA
+    // Fire once, 7 days after install AND after 3 active days (both required).
+    RateTrigger(id: "pro_upsell", days: 3, sinceInstall: 7, mode: .all)
+])
+```
 
-### @Published State
-TBA
+A trigger only checks the conditions you set (non-zero). `mode` (`.all` / `.any`) combines them when you set more than one.
 
+### Drive it
 
+```swift
+RateBoi.main.active()                       // call on app active — stamps a distinct day + re-evaluates
+RateBoi.main.increment("rating")            // positive action (delight auto-weights by momentum)
+RateBoi.main.increment("rating", points: 5) // or add explicit points
+RateBoi.main.penalize("rating")             // an error happened — cool the score down
+```
 
+### React
+
+```swift
+RateBoi.main.on("rating") {
+    RateBoi.main.review()                   // StoreKit review prompt convenience
+}
+
+RateBoi.main.on("recording_nudge") {
+    // present your own UI…
+    RateBoi.main.resolve("recording_nudge") // …and stop asking once they do it
+}
+
+// Or observe the stream / bound state:
+RateBoi.main.events.sink { id in … }
+// @Published var fired: Set<String>
+```
+
+### Lifecycle
+
+- `resolve(id)` — the user did the thing; never fire again.
+- `snooze(id, days:)` — hold off for a while.
+- `reset(id)` / `reset()` — clear a trigger (or everything). Handy for a debug menu.
+
+### Scoring modes
+
+- `.manual` — you own the points. `increment(id)` adds 1; `increment(id, points:)` adds any amount.
+- `.delight` — momentum-weighted: positive actions in quick succession score more, a recent `penalize` softens the next gain. Great for review timing.
+
+### Persistence
+
+Everything lives in `UserDefaults` (your suite), namespaced per trigger (`rateboi.<id>.*`) plus global `rateboi.install` / `rateboi.days`. No server, no tracking.
